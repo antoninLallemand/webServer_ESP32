@@ -62,8 +62,11 @@ char LEDStateText[2][15] = {"LED Eteinte","LED Allumée"};
 
 WebServer myServer(80); //http port : 80
 
+
+//function called when client reach the home root with 200 code (success)
 void handleRoot(){
   String page = "<!DOCTYPE html>";
+  //load page as a string
   page += "<html lang='fr'>";
   page += "    <head>";
   page += "        <title> Serveur ESP32 </title>";
@@ -85,26 +88,29 @@ void handleRoot(){
   page += "    </body>";
   page += "</html>";
 
-  myServer.setContentLength(page.length());
+  myServer.setContentLength(page.length()); //make faster the reloading after button press
   myServer.send(200, "text/html", page);
 }
 
+//function called when client calls a unkow root (404 not found)
 void handleNotFound(){
   myServer.send(404, "text/plain", "404 : Not found !");
 }
 
+//function called when client open root /on (when ON button is pressed)
 void handleOn(){
   digitalWrite(LED, 1);
   LEDState = 1;
-  myServer.sendHeader("Location", "/");
-  myServer.send(303);
+  myServer.sendHeader("Location", "/"); //come back to home root
+  myServer.send(303); //displaced to another page
 }
 
+//function called when client open root /off (when OFF button is pressed)
 void handleOff(){
   digitalWrite(LED, 0);
   LEDState = 0;
-  myServer.sendHeader("Location", "/");
-  myServer.send(303);
+  myServer.sendHeader("Location", "/"); //come back to home root
+  myServer.send(303); //displaced to another page
 }
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Execution ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -115,10 +121,13 @@ void setup() {
 
   connectToWiFi();
 
+  //links roots and associated callback functions
   myServer.on("/", handleRoot);
   myServer.onNotFound(handleNotFound);
   myServer.on("/on", handleOn);
   myServer.on("/off", handleOff);
+
+  //starting server
   myServer.begin();
   Serial.println("Active server !");
 
@@ -128,9 +137,12 @@ void setup() {
 }
 
 void loop() {
+  //trys to reconnect when wifi connection is lost
   if (WiFi.status() != WL_CONNECTED) {
     Serial.println("WiFi connection lost. Reconnecting...");
     connectToWiFi();
   }
+
+  //manage every client requests
   myServer.handleClient();
 }
