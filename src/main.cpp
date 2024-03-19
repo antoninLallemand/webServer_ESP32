@@ -4,8 +4,8 @@
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Wifi management ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-const char *SSID = "Redmi 10C"; //Redmi 10C
-const char *PWD = "ogre3187"; //ogre3187
+const char *SSID = "SFR_6920"; //Redmi 10C
+const char *PWD = "xskd9iad52bppg5bsu22"; //ogre3187
 unsigned long lastMillis = 0; //wifi retry variable
 
 String get_wifi_status(int status){
@@ -111,7 +111,7 @@ uint8_t stringToUint8(String input){
 void handleRoot(){
 
   if (!authenticateUsers())
-      return myServer.requestAuthentication();
+      return myServer.requestAuthentication(); 
 
   String page = "<!DOCTYPE html>";
   //load page as a string
